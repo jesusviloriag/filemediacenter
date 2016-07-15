@@ -1,0 +1,12 @@
+version: '2'
+services:
+    mediacenter-postgresql:
+        container_name: mediacenter-postgresql
+        image: postgres:9.5.2
+        # volumes:
+        #     - ~/volumes/jhipster/MediaCenter/postgresql/:/var/lib/postgresql/
+        environment:
+            - POSTGRES_USER=MediaCenter
+            - POSTGRES_PASSWORD=
+        ports:
+            - 5432:5432

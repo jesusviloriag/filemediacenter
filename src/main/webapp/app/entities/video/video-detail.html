@@ -1,0 +1,22 @@
+
+<div>
+    <h2><span translate="mediaCenterApp.video.detail.title">Video</span> {{vm.video.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span translate="mediaCenterApp.video.nombre">Nombre</span></dt>
+        <dd>
+            <span>{{vm.video.nombre}}</span>
+        </dd>
+        <dt><span translate="mediaCenterApp.video.archivo">Archivo</span></dt>
+        <dd>
+            <span>{{vm.video.archivo}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            onclick="window.history.back()"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
+    </button>
+</div>
