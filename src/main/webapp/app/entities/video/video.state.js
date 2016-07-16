@@ -71,8 +71,11 @@
                     resolve: {
                         entity: function () {
                             return {
-                                nombre: null,
+                                titulo: null,
+                                ano: null,
                                 archivo: null,
+                                archivoContentType: null,
+                                direccionEnServidor: null,
                                 id: null
                             };
                         }

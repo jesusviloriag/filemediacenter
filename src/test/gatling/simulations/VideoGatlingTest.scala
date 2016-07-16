@@ -67,7 +67,7 @@ class VideoGatlingTest extends Simulation {
             .exec(http("Create new video")
             .post("/api/videos")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "nombre":"SAMPLE_TEXT", "archivo":"SAMPLE_TEXT"}""")).asJSON
+            .body(StringBody("""{"id":null, "titulo":"SAMPLE_TEXT", "ano":"0", "archivo":null, "direccionEnServidor":"SAMPLE_TEXT"}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_video_url"))).exitHereIfFailed
             .pause(10)

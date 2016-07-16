@@ -4,14 +4,31 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span translate="mediaCenterApp.video.nombre">Nombre</span></dt>
+        <dt><span translate="mediaCenterApp.video.titulo">Titulo</span></dt>
         <dd>
-            <span>{{vm.video.nombre}}</span>
+            <span>{{vm.video.titulo}}</span>
         </dd>
-        <dt><span translate="mediaCenterApp.video.archivo">Archivo</span></dt>
+        <dt><span translate="mediaCenterApp.video.ano">Ano</span></dt>
         <dd>
-            <span>{{vm.video.archivo}}</span>
+            <span>{{vm.video.ano}}</span>
         </dd>
+
+        <center style="width:100%">
+            <section class="video" ng-video style="width:100%">
+                <video vi-screen style="width:100%"></video>
+                <section vi-buffer></section>
+                <section vi-controls>
+                    <a vi-controls-play>Play</a>
+                    <a vi-controls-pause>Pause</a>
+                </section>
+                <a vi-full-screen-toggle>Toggle Full-Screen!</a>
+                <br>
+                <b></b><a target="_self" href="{{vm.video.direccionEnServidor}}" download="{{vm.video.direccionEnServidor}}">Descargar</a></b>
+            </section>
+
+        </center>
+
+        <br>
     </dl>
 
     <button type="submit"

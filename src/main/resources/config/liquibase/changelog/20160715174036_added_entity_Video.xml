@@ -21,11 +21,26 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="nombre" type="varchar(255)">
-                <constraints nullable="false" />
+            <column name="titulo" type="varchar(255)">
+                <constraints nullable="true" />
             </column>
             
-            <column name="archivo" type="varchar(255)">
+            <column name="ano" type="integer">
+                <constraints nullable="true" />
+            </column>
+            
+            <column name="archivo" type="blob">
+                <constraints nullable="true" />
+            </column>
+            <column name="archivo_content_type" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="direccion_en_servidor" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="nombre_archivo" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
             

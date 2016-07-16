@@ -14,25 +14,53 @@
                     ng-model="vm.video.id" readonly />
         </div>
         <div class="form-group">
-            <label class="control-label" translate="mediaCenterApp.video.nombre" for="field_nombre">Nombre</label>
-            <input type="text" class="form-control" name="nombre" id="field_nombre"
-                    ng-model="vm.video.nombre"
+            <label class="control-label" translate="mediaCenterApp.video.titulo" for="field_titulo">Titulo</label>
+            <input type="text" class="form-control" name="titulo" id="field_titulo"
+                    ng-model="vm.video.titulo"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="mediaCenterApp.video.ano" for="field_ano">Ano</label>
+            <input type="number" class="form-control" name="ano" id="field_ano"
+                    ng-model="vm.video.ano"
+                     />
+        </div>
+        <div class="form-group" ngf-drop ngf-change="vm.setArchivo($file, vm.video)">
+            <label class="control-label" translate="mediaCenterApp.video.archivo" for="field_archivo">Archivo</label>
+            <div>
+                <div ng-if="vm.video.archivo" class="help-block clearfix">
+                    <a class="pull-left" ng-click="vm.openFile(vm.video.archivoContentType, vm.video.archivo)" translate="entity.action.open">open</a><br>
+                    <span class="pull-left">{{vm.video.archivoContentType}}, {{vm.byteSize(vm.video.archivo)}}</span>
+                    <button ng-click="vm.video.archivo=null;vm.video.archivoContentType=null;"
+                            class="btn btn-default btn-xs pull-right">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+                <button type="file" ngf-select class="btn btn-default btn-block"
+                        ngf-change="vm.setArchivo($file, vm.video)" translate="entity.action.addblob">
+                    Add blob
+                </button>
+            </div>
+            <input type="hidden" class="form-control" name="archivo" id="field_archivo"
+                    ng-model="vm.video.archivo"
                     required />
-            <div ng-show="editForm.nombre.$invalid">
+            <input type="hidden" class="form-control" name="archivoContentType" id="field_archivoContentType"
+                    ng-model="vm.video.archivoContentType" />
+            <div ng-show="editForm.archivo.$invalid">
                 <p class="help-block"
-                    ng-show="editForm.nombre.$error.required" translate="entity.validation.required">
+                    ng-show="editForm.archivo.$error.required" translate="entity.validation.required">
                     This field is required.
                 </p>
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label" translate="mediaCenterApp.video.archivo" for="field_archivo">Archivo</label>
-            <input type="text" class="form-control" name="archivo" id="field_archivo"
-                    ng-model="vm.video.archivo"
-                    required />
-            <div ng-show="editForm.archivo.$invalid">
+        <div class="form-group" ng-show="false">
+            <label class="control-label" translate="mediaCenterApp.video.direccionEnServidor" for="field_direccionEnServidor">Direccion En Servidor</label>
+            <input type="text" class="form-control" name="direccionEnServidor" id="field_direccionEnServidor"
+                    ng-model="vm.video.direccionEnServidor"
+                    required value="- lleno luego -" />
+            <div ng-show="editForm.direccionEnServidor.$invalid">
                 <p class="help-block"
-                    ng-show="editForm.archivo.$error.required" translate="entity.validation.required">
+                    ng-show="editForm.direccionEnServidor.$error.required" translate="entity.validation.required">
                     This field is required.
                 </p>
             </div>

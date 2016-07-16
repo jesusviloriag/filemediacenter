@@ -16,8 +16,10 @@
             "detail": {
                 "title": "Video"
             },
-            "nombre": "Nombre",
-            "archivo": "Archivo"
+            "titulo": "Titulo",
+            "ano": "Ano",
+            "archivo": "Archivo",
+            "direccionEnServidor": "Direccion En Servidor"
         }
     }
 }

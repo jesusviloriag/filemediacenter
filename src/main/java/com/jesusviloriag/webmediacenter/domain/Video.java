@@ -22,13 +22,25 @@ public class Video implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull
-    @Column(name = "nombre", nullable = false)
-    private String nombre;
+    @Column(name = "titulo")
+    private String titulo;
+
+    @Column(name = "ano")
+    private Integer ano;
+
+    @Column(name = "nombre_archivo")
+    private String nombreArchivo;
+
+    @Lob
+    @Column(name = "archivo", nullable = false)
+    private byte[] archivo;
+
+    @Column(name = "archivo_content_type", nullable = false)
+    private String archivoContentType;
 
     @NotNull
-    @Column(name = "archivo", nullable = false)
-    private String archivo;
+    @Column(name = "direccion_en_servidor", nullable = false)
+    private String direccionEnServidor;
 
     public Long getId() {
         return id;
@@ -38,20 +50,44 @@ public class Video implements Serializable {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
-    public String getArchivo() {
+    public Integer getAno() {
+        return ano;
+    }
+
+    public void setAno(Integer ano) {
+        this.ano = ano;
+    }
+
+    public byte[] getArchivo() {
         return archivo;
     }
 
-    public void setArchivo(String archivo) {
+    public void setArchivo(byte[] archivo) {
         this.archivo = archivo;
+    }
+
+    public String getArchivoContentType() {
+        return archivoContentType;
+    }
+
+    public void setArchivoContentType(String archivoContentType) {
+        this.archivoContentType = archivoContentType;
+    }
+
+    public String getDireccionEnServidor() {
+        return direccionEnServidor;
+    }
+
+    public void setDireccionEnServidor(String direccionEnServidor) {
+        this.direccionEnServidor = direccionEnServidor;
     }
 
     @Override
@@ -78,8 +114,19 @@ public class Video implements Serializable {
     public String toString() {
         return "Video{" +
             "id=" + id +
-            ", nombre='" + nombre + "'" +
+            ", titulo='" + titulo + "'" +
+            ", ano='" + ano + "'" +
             ", archivo='" + archivo + "'" +
+            ", archivoContentType='" + archivoContentType + "'" +
+            ", direccionEnServidor='" + direccionEnServidor + "'" +
             '}';
+    }
+
+    public String getNombreArchivo() {
+        return nombreArchivo;
+    }
+
+    public void setNombreArchivo(String nombreArchivo) {
+        this.nombreArchivo = nombreArchivo;
     }
 }

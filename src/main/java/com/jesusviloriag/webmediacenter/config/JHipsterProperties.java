@@ -24,6 +24,8 @@ public class JHipsterProperties {
 
     private final Mail mail = new Mail();
 
+    private final File file = new File();
+
     private final Security security = new Security();
 
     private final Swagger swagger = new Swagger();
@@ -48,6 +50,10 @@ public class JHipsterProperties {
 
     public Mail getMail() {
         return mail;
+    }
+
+    public File getFile() {
+        return file;
     }
 
     public Security getSecurity() {
@@ -167,6 +173,19 @@ public class JHipsterProperties {
 
         public void setFrom(String from) {
             this.from = from;
+        }
+    }
+
+    public static class File {
+
+        private String url = "/content/";
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
         }
     }
 

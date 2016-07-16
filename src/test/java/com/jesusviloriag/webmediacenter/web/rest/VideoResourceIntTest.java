@@ -20,6 +20,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -41,10 +42,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @IntegrationTest
 public class VideoResourceIntTest {
 
-    private static final String DEFAULT_NOMBRE = "AAAAA";
-    private static final String UPDATED_NOMBRE = "BBBBB";
-    private static final String DEFAULT_ARCHIVO = "AAAAA";
-    private static final String UPDATED_ARCHIVO = "BBBBB";
+    private static final String DEFAULT_TITULO = "AAAAA";
+    private static final String UPDATED_TITULO = "BBBBB";
+
+    private static final Integer DEFAULT_ANO = 1;
+    private static final Integer UPDATED_ANO = 2;
+
+    private static final byte[] DEFAULT_ARCHIVO = TestUtil.createByteArray(1, "0");
+    private static final byte[] UPDATED_ARCHIVO = TestUtil.createByteArray(2, "1");
+    private static final String DEFAULT_ARCHIVO_CONTENT_TYPE = "image/jpg";
+    private static final String UPDATED_ARCHIVO_CONTENT_TYPE = "image/png";
+    private static final String DEFAULT_DIRECCION_EN_SERVIDOR = "AAAAA";
+    private static final String UPDATED_DIRECCION_EN_SERVIDOR = "BBBBB";
 
     @Inject
     private VideoRepository videoRepository;
@@ -72,8 +81,11 @@ public class VideoResourceIntTest {
     @Before
     public void initTest() {
         video = new Video();
-        video.setNombre(DEFAULT_NOMBRE);
+        video.setTitulo(DEFAULT_TITULO);
+        video.setAno(DEFAULT_ANO);
         video.setArchivo(DEFAULT_ARCHIVO);
+        video.setArchivoContentType(DEFAULT_ARCHIVO_CONTENT_TYPE);
+        video.setDireccionEnServidor(DEFAULT_DIRECCION_EN_SERVIDOR);
     }
 
     @Test
@@ -92,16 +104,19 @@ public class VideoResourceIntTest {
         List<Video> videos = videoRepository.findAll();
         assertThat(videos).hasSize(databaseSizeBeforeCreate + 1);
         Video testVideo = videos.get(videos.size() - 1);
-        assertThat(testVideo.getNombre()).isEqualTo(DEFAULT_NOMBRE);
+        assertThat(testVideo.getTitulo()).isEqualTo(DEFAULT_TITULO);
+        assertThat(testVideo.getAno()).isEqualTo(DEFAULT_ANO);
         assertThat(testVideo.getArchivo()).isEqualTo(DEFAULT_ARCHIVO);
+        assertThat(testVideo.getArchivoContentType()).isEqualTo(DEFAULT_ARCHIVO_CONTENT_TYPE);
+        assertThat(testVideo.getDireccionEnServidor()).isEqualTo(DEFAULT_DIRECCION_EN_SERVIDOR);
     }
 
     @Test
     @Transactional
-    public void checkNombreIsRequired() throws Exception {
+    public void checkArchivoIsRequired() throws Exception {
         int databaseSizeBeforeTest = videoRepository.findAll().size();
         // set the field null
-        video.setNombre(null);
+        video.setArchivo(null);
 
         // Create the Video, which fails.
 
@@ -116,10 +131,10 @@ public class VideoResourceIntTest {
 
     @Test
     @Transactional
-    public void checkArchivoIsRequired() throws Exception {
+    public void checkDireccionEnServidorIsRequired() throws Exception {
         int databaseSizeBeforeTest = videoRepository.findAll().size();
         // set the field null
-        video.setArchivo(null);
+        video.setDireccionEnServidor(null);
 
         // Create the Video, which fails.
 
@@ -143,8 +158,11 @@ public class VideoResourceIntTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(video.getId().intValue())))
-                .andExpect(jsonPath("$.[*].nombre").value(hasItem(DEFAULT_NOMBRE.toString())))
-                .andExpect(jsonPath("$.[*].archivo").value(hasItem(DEFAULT_ARCHIVO.toString())));
+                .andExpect(jsonPath("$.[*].titulo").value(hasItem(DEFAULT_TITULO.toString())))
+                .andExpect(jsonPath("$.[*].ano").value(hasItem(DEFAULT_ANO)))
+                .andExpect(jsonPath("$.[*].archivoContentType").value(hasItem(DEFAULT_ARCHIVO_CONTENT_TYPE)))
+                .andExpect(jsonPath("$.[*].archivo").value(hasItem(Base64Utils.encodeToString(DEFAULT_ARCHIVO))))
+                .andExpect(jsonPath("$.[*].direccionEnServidor").value(hasItem(DEFAULT_DIRECCION_EN_SERVIDOR.toString())));
     }
 
     @Test
@@ -158,8 +176,11 @@ public class VideoResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(video.getId().intValue()))
-            .andExpect(jsonPath("$.nombre").value(DEFAULT_NOMBRE.toString()))
-            .andExpect(jsonPath("$.archivo").value(DEFAULT_ARCHIVO.toString()));
+            .andExpect(jsonPath("$.titulo").value(DEFAULT_TITULO.toString()))
+            .andExpect(jsonPath("$.ano").value(DEFAULT_ANO))
+            .andExpect(jsonPath("$.archivoContentType").value(DEFAULT_ARCHIVO_CONTENT_TYPE))
+            .andExpect(jsonPath("$.archivo").value(Base64Utils.encodeToString(DEFAULT_ARCHIVO)))
+            .andExpect(jsonPath("$.direccionEnServidor").value(DEFAULT_DIRECCION_EN_SERVIDOR.toString()));
     }
 
     @Test
@@ -180,8 +201,11 @@ public class VideoResourceIntTest {
         // Update the video
         Video updatedVideo = new Video();
         updatedVideo.setId(video.getId());
-        updatedVideo.setNombre(UPDATED_NOMBRE);
+        updatedVideo.setTitulo(UPDATED_TITULO);
+        updatedVideo.setAno(UPDATED_ANO);
         updatedVideo.setArchivo(UPDATED_ARCHIVO);
+        updatedVideo.setArchivoContentType(UPDATED_ARCHIVO_CONTENT_TYPE);
+        updatedVideo.setDireccionEnServidor(UPDATED_DIRECCION_EN_SERVIDOR);
 
         restVideoMockMvc.perform(put("/api/videos")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -192,8 +216,11 @@ public class VideoResourceIntTest {
         List<Video> videos = videoRepository.findAll();
         assertThat(videos).hasSize(databaseSizeBeforeUpdate);
         Video testVideo = videos.get(videos.size() - 1);
-        assertThat(testVideo.getNombre()).isEqualTo(UPDATED_NOMBRE);
+        assertThat(testVideo.getTitulo()).isEqualTo(UPDATED_TITULO);
+        assertThat(testVideo.getAno()).isEqualTo(UPDATED_ANO);
         assertThat(testVideo.getArchivo()).isEqualTo(UPDATED_ARCHIVO);
+        assertThat(testVideo.getArchivoContentType()).isEqualTo(UPDATED_ARCHIVO_CONTENT_TYPE);
+        assertThat(testVideo.getDireccionEnServidor()).isEqualTo(UPDATED_DIRECCION_EN_SERVIDOR);
     }
 
     @Test

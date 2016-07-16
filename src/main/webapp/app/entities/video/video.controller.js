@@ -5,9 +5,9 @@
         .module('mediaCenterApp')
         .controller('VideoController', VideoController);
 
-    VideoController.$inject = ['$scope', '$state', 'Video', 'ParseLinks', 'AlertService'];
+    VideoController.$inject = ['$scope', '$state', 'DataUtils', 'Video', 'ParseLinks', 'AlertService'];
 
-    function VideoController ($scope, $state, Video, ParseLinks, AlertService) {
+    function VideoController ($scope, $state, DataUtils, Video, ParseLinks, AlertService) {
         var vm = this;
         
         vm.videos = [];
@@ -19,6 +19,8 @@
         vm.predicate = 'id';
         vm.reset = reset;
         vm.reverse = true;
+        vm.openFile = DataUtils.openFile;
+        vm.byteSize = DataUtils.byteSize;
 
         loadAll();
 

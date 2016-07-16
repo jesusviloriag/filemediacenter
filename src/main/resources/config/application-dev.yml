@@ -18,10 +18,10 @@ spring:
         livereload:
             enabled: false # we use gulp + BrowserSync for livereload
     datasource:
-        url: jdbc:postgresql://localhost:5432/MediaCenter
+        url: jdbc:postgresql://localhost:5432/filemediacenter
         name:
-        username: MediaCenter
-        password:
+        username: postgres
+        password: 321321
     jpa:
         database-platform: com.jesusviloriag.webmediacenter.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL

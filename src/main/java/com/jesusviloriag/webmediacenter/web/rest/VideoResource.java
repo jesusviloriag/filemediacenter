@@ -1,6 +1,7 @@
 package com.jesusviloriag.webmediacenter.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.jesusviloriag.webmediacenter.config.JHipsterProperties;
 import com.jesusviloriag.webmediacenter.domain.Video;
 import com.jesusviloriag.webmediacenter.repository.VideoRepository;
 import com.jesusviloriag.webmediacenter.web.rest.util.HeaderUtil;
@@ -13,12 +14,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.validation.Valid;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,10 +35,16 @@ import java.util.Optional;
 public class VideoResource {
 
     private final Logger log = LoggerFactory.getLogger(VideoResource.class);
-        
+
+    @Inject
+    private ServletContext servletContext;
+
     @Inject
     private VideoRepository videoRepository;
-    
+
+    @Inject
+    private JHipsterProperties jHipsterProperties;
+
     /**
      * POST  /videos : Create a new video.
      *
@@ -50,7 +61,48 @@ public class VideoResource {
         if (video.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("video", "idexists", "A new video cannot already have an ID")).body(null);
         }
-        Video result = videoRepository.save(video);
+
+        String direccion = servletContext.getRealPath(jHipsterProperties.getFile().getUrl()) + "/videos/" + video.getNombreArchivo();
+        direccion = direccion.replace("/",File.separator);
+
+        Video result = null;
+
+        try {
+
+            File file = new File(direccion);
+
+            // if file doesnt exists, then create it
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(video.getArchivo(), 0, video.getArchivo().length);
+            fos.flush();
+            fos.close();
+
+            video.setArchivo(null);
+            video.setDireccionEnServidor("content/videos/" + video.getNombreArchivo());
+            if((video.getTitulo() == null)||(video.getTitulo().equals("")))
+                video.setTitulo(video.getNombreArchivo());
+
+            if((video.getAno() == null)||(video.getAno() == 0)) {
+                java.util.Date date = new java.util.Date(); // your date
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                Integer year = cal.get(Calendar.YEAR); //Your year, kind sir
+
+                video.setAno(year);
+            }
+
+            result = videoRepository.save(video);
+
+            System.out.println("Done");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return ResponseEntity.created(new URI("/api/videos/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("video", result.getId().toString()))
             .body(result);
@@ -74,7 +126,48 @@ public class VideoResource {
         if (video.getId() == null) {
             return createVideo(video);
         }
-        Video result = videoRepository.save(video);
+
+        String direccion = servletContext.getRealPath(jHipsterProperties.getFile().getUrl()) + "/videos/" + video.getNombreArchivo();
+        direccion = direccion.replace("/",File.separator);
+
+        Video result = null;
+
+        try {
+
+            File file = new File(direccion);
+
+            // if file doesnt exists, then create it
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(video.getArchivo(), 0, video.getArchivo().length);
+            fos.flush();
+            fos.close();
+
+            video.setArchivo(null);
+            video.setDireccionEnServidor("content/videos/" + video.getNombreArchivo());
+            if((video.getTitulo() == null)||(video.getTitulo().equals("")))
+                video.setTitulo(video.getNombreArchivo());
+
+            if((video.getAno() == null)||(video.getAno() == 0)) {
+                java.util.Date date = new java.util.Date(); // your date
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                Integer year = cal.get(Calendar.YEAR); //Your year, kind sir
+
+                video.setAno(year);
+            }
+
+            result = videoRepository.save(video);
+
+            System.out.println("Done");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("video", video.getId().toString()))
             .body(result);
@@ -94,7 +187,7 @@ public class VideoResource {
     public ResponseEntity<List<Video>> getAllVideos(Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Videos");
-        Page<Video> page = videoRepository.findAll(pageable); 
+        Page<Video> page = videoRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/videos");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -112,6 +205,18 @@ public class VideoResource {
     public ResponseEntity<Video> getVideo(@PathVariable Long id) {
         log.debug("REST request to get Video : {}", id);
         Video video = videoRepository.findOne(id);
+
+       /* RandomAccessFile f = null;
+        try {
+            f = new RandomAccessFile(video.getDireccionEnServidor(), "r");
+            byte[] b = new byte[(int)f.length()];
+            video.setArchivo(b);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
         return Optional.ofNullable(video)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -129,9 +234,33 @@ public class VideoResource {
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
+    @Transactional
     public ResponseEntity<Void> deleteVideo(@PathVariable Long id) {
         log.debug("REST request to delete Video : {}", id);
+
+        Video video = videoRepository.getOne(id);
+
+        String direccion = servletContext.getRealPath(jHipsterProperties.getFile().getUrl()) + "/videos/" + video.getNombreArchivo();
+        direccion = direccion.replace("/",File.separator);
+
+        try{
+
+            File file = new File(direccion);
+
+            if(file.delete()){
+                System.out.println(file.getName() + " is deleted!");
+            }else{
+                System.out.println("Delete operation is failed.");
+            }
+
+        }catch(Exception e){
+
+            e.printStackTrace();
+
+        }
+
         videoRepository.delete(id);
+
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("video", id.toString())).build();
     }
 

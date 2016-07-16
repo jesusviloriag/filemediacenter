@@ -1,0 +1,33 @@
+{
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "titulo",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "ano",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "archivo",
+            "fieldType": "byte[]",
+            "fieldTypeBlobContent": "any",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "direccionEnServidor",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20160715174036",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "video",
+    "pagination": "infinite-scroll"
+}

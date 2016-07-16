@@ -5,14 +5,18 @@
         .module('mediaCenterApp')
         .controller('VideoDialogController', VideoDialogController);
 
-    VideoDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Video'];
+    VideoDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'DataUtils', 'entity', 'Video'];
 
-    function VideoDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Video) {
+    function VideoDialogController ($timeout, $scope, $stateParams, $uibModalInstance, DataUtils, entity, Video) {
         var vm = this;
 
         vm.video = entity;
         vm.clear = clear;
+        vm.byteSize = DataUtils.byteSize;
+        vm.openFile = DataUtils.openFile;
         vm.save = save;
+
+        vm.video.direccionEnServidor = "- lleno luego -";
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
@@ -41,6 +45,18 @@
             vm.isSaving = false;
         }
 
+
+        vm.setArchivo = function ($file, video) {
+            if ($file) {
+                DataUtils.toBase64($file, function(base64Data) {
+                    $scope.$apply(function() {
+                        video.nombreArchivo = $file.name;
+                        video.archivo = base64Data;
+                        video.archivoContentType = $file.type;
+                    });
+                });
+            }
+        };
 
     }
 })();
